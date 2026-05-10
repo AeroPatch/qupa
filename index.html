@@ -2,265 +2,510 @@
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-
-  <title>🚽 Współkłojownictwo</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-  <link
-    href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap"
-    rel="stylesheet"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Współkałownictwo</title>
 
   <style>
-
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
     }
 
-    body{
-      background:#0f172a;
-      color:white;
-      font-family:'Fredoka',sans-serif;
-      padding:16px;
-      padding-bottom:120px;
+    body {
+      min-height: 100vh;
+      background: linear-gradient(180deg, #1a120b, #0f0a07);
+      color: #f5f1ea;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    h1{
-      text-align:center;
-      font-size:2rem;
-      margin-bottom:8px;
+    /* TOP BAR */
+    .topbar {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding: 10px 0;
     }
 
-    .subtitle{
-      text-align:center;
-      opacity:0.8;
-      margin-bottom:24px;
+    .title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: #d6b48a;
     }
 
-    .player-card{
-      background:#1e293b;
-      border-radius:24px;
-      padding:16px;
-      margin-bottom:16px;
-      box-shadow:0 6px 18px rgba(0,0,0,0.35);
-      transition:0.15s;
+    /* BUTTONS */
+    .btn {
+      background: linear-gradient(145deg, #8b5e34, #6b4423);
+      color: #fff;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
 
-    .player-card:active{
-      transform:scale(0.98);
+    .btn:hover {
+      transform: scale(1.05);
     }
 
-    .player-header{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      margin-bottom:12px;
-      font-size:1.2rem;
-      font-weight:bold;
+    .close-btn {
+      background: #3a1f12;
+      margin-top: 10px;
+      width: 100%;
     }
 
-    .score{
-      font-size:1.2rem;
+    /* RANKING */
+    .ranking {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .progress{
-      width:100%;
-      height:16px;
-      background:#334155;
-      border-radius:999px;
-      overflow:hidden;
-      margin-bottom:16px;
+    .player-card {
+      background: rgba(40, 25, 15, 0.85);
+      border-radius: 18px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: 0.25s ease;
+      border: 1px solid rgba(214, 180, 138, 0.15);
+      backdrop-filter: blur(6px);
     }
 
-    .progress-bar{
-      height:100%;
-      background:linear-gradient(90deg,#22c55e,#84cc16);
-      transition:0.3s;
+    .player-card:hover {
+      transform: scale(1.02);
+      border-color: #d6b48a;
     }
 
-    button{
-      width:100%;
-      border:none;
-      border-radius:18px;
-      padding:16px;
-      background:#22c55e;
-      color:black;
-      font-size:1rem;
-      font-weight:bold;
-      cursor:pointer;
+    .player-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
 
-    button:active{
-      transform:scale(0.96);
+    .position {
+      font-size: 1.3rem;
+      font-weight: bold;
+      width: 36px;
+      color: #d6b48a;
+      text-align: center;
     }
 
-    .message{
-      position:fixed;
-      bottom:24px;
-      left:50%;
-      transform:translateX(-50%);
-      background:white;
-      color:black;
-      padding:12px 20px;
-      border-radius:999px;
-      font-weight:bold;
-      opacity:0;
-      transition:0.3s;
-      pointer-events:none;
-      z-index:999;
+    .player-name {
+      font-size: 1.05rem;
+      font-weight: 600;
     }
 
-    .message.show{
-      opacity:1;
+    .player-points {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #c89b6a;
     }
 
+    /* MODAL */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;
+      z-index: 1000;
+    }
+
+    .modal-content {
+      background: #1a120b;
+      border: 1px solid rgba(214, 180, 138, 0.2);
+      padding: 20px;
+      border-radius: 20px;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    .modal-content h2 {
+      margin-bottom: 14px;
+      color: #d6b48a;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(214, 180, 138, 0.2);
+      margin-bottom: 12px;
+      background: #0f0a07;
+      color: white;
+      font-size: 1rem;
+      text-align: center;
+      outline: none;
+    }
+
+    /* ADMIN */
+    .admin-controls {
+      margin-top: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .points-control {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .points-control input {
+      margin: 0;
+      width: 100px;
+    }
+
+    .small-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      border: none;
+      background: #8b5e34;
+      color: white;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    /* iPhone 14 feel */
+    @media (max-width: 430px) {
+      body {
+        padding: 14px;
+      }
+
+      .title {
+        font-size: 1.3rem;
+      }
+
+      .player-card {
+        padding: 14px;
+      }
+
+      .player-name {
+        font-size: 1rem;
+      }
+
+      .player-points {
+        font-size: 1.1rem;
+      }
+    }
   </style>
 </head>
 
 <body>
 
-  <h1>🚽 WSPÓŁKŁOJOWNICTWO</h1>
+<div class="topbar">
+  <div class="title">🚽 Współkałownictwo</div>
 
-  <div class="subtitle">
-    Bitwa o porcelanowy tron
+  <button class="btn" id="loginBtn">
+    Zaloguj
+  </button>
+</div>
+
+  <div class="ranking" id="ranking"></div>
+
+  <!-- MODAL LOGOWANIA -->
+<div class="modal" id="loginModal">
+  <div class="modal-content">
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2>Logowanie Admina</h2>
+      <span style="cursor:pointer; font-size:20px;" onclick="closeLoginModal()">✖</span>
+    </div>
+
+    <input
+      type="password"
+      id="passwordInput"
+      placeholder="Wpisz hasło"
+    />
+
+    <button class="btn" onclick="login()">
+      Zaloguj
+    </button>
+
   </div>
+</div>
 
-  <div id="players"></div>
+  <!-- MODAL SZCZEGÓŁÓW -->
+<div class="modal" id="detailsModal">
+  <div class="modal-content">
 
-  <div class="message" id="message"></div>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 id="detailsName"></h2>
+      <span style="cursor:pointer; font-size:20px;" onclick="closeDetailsModal()">✖</span>
+    </div>
 
-  <script>
+    <!-- INFO LEWA WYRÓWNANA -->
+    <div class="details" id="detailsContent" style="text-align:left;"></div>
 
-const SHEET_URL =
-  "https://opensheet.elk.sh/1ABCDEF123456789/Arkusz1";
+    <!-- ADMIN -->
+    <div class="admin-controls" id="adminControls">
 
-    const messages = [
-      "💀 Kolejna porcelanka",
-      "🚽 Speedrun completed",
-      "📈 Forma rośnie",
-      "🔥 Combo x3",
-      "☢️ Kryzys żołądkowy",
-      "🧻 Potężne wyjście",
-      "💩 Grubo poszło",
-      "🚨 Alarm łazienkowy"
-    ];
+      <h3 style="text-align:left;">Edycja punktów</h3>
 
-    async function loadPlayers(){
+      <div class="points-control">
+        <button class="small-btn" onclick="changePoints(-1)">-</button>
 
-      const response = await fetch(SHEET_URL);
+        <input type="number" id="pointsInput" />
 
-      const data = await response.json();
+        <button class="small-btn" onclick="changePoints(1)">+</button>
+      </div>
 
-      const playersDiv =
-        document.getElementById("players");
+      <button class="btn" onclick="savePoints()">
+        Zapisz
+      </button>
 
-      playersDiv.innerHTML = "";
+    </div>
 
-      data.sort(
-        (a,b)=>
-        Number(b.points)-Number(a.points)
-      );
+    <!-- CENTROWANY PRZYCISK ZAMKNIĘCIA -->
+    <div style="display:flex; justify-content:center; margin-top:14px;">
+      <button class="btn close-btn" onclick="closeDetailsModal()">
+        Zamknij
+      </button>
+    </div>
 
-      const maxPoints = Math.max(
-        ...data.map(
-          p=>Number(p.points)
-        ),
-        1
-      );
+  </div>
+</div>
 
-      data.forEach((player,index)=>{
+<script type="module">
 
-        const points =
-          Number(player.points);
+  // =========================================
+  // FIREBASE
+  // =========================================
 
-        const progressWidth =
-          (points/maxPoints)*100;
+  import { initializeApp }
+  from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 
-        let medal = `${index+1}.`;
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    onSnapshot
+  }
+  from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-        if(index===0) medal="🥇";
-        if(index===1) medal="🥈";
-        if(index===2) medal="🥉";
+  const firebaseConfig = {
+    apiKey: "AIzaSyBFeml8grWT6Pue3sjFXYbZFOhr1BhnPQo",
+    authDomain: "kupa-81d72.firebaseapp.com",
+    projectId: "kupa-81d72",
+    storageBucket: "kupa-81d72.firebasestorage.app",
+    messagingSenderId: "909784354553",
+    appId: "1:909784354553:web:60593692a084987d77dc28"
+  };
 
-        const card =
-          document.createElement("div");
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
 
-        card.className="player-card";
+  // =========================================
+  // KONFIGURACJA
+  // =========================================
 
-        card.innerHTML = `
-          <div class="player-header">
-            <span>
-              ${medal} ${player.name}
-            </span>
+  const ADMIN_PASSWORD = "admin123";
+  let isAdmin = false;
 
-            <span class="score">
-              ${points} 🚽
-            </span>
-          </div>
+  let players = [];
+  let selectedPlayer = null;
 
-          <div class="progress">
-            <div
-              class="progress-bar"
-              style="width:${progressWidth}%">
-            </div>
-          </div>
+  const rankingEl = document.getElementById("ranking");
+  const loginBtn = document.getElementById("loginBtn");
 
-          <button
-            onclick="registerPoop('${player.name}')">
+  // =========================================
+  // REALTIME FIREBASE
+  // =========================================
 
-            🔥 ZAREJESTRUJ KUPĘ 🔥
+  function startRealtime() {
 
-          </button>
-        `;
+    const ref = doc(db, "ranking", "players");
 
-        playersDiv.appendChild(card);
+    onSnapshot(ref, (docSnap) => {
 
-      });
+      if (!docSnap.exists()) {
+        players = [];
+        renderRanking();
+        return;
+      }
 
+      const data = docSnap.data();
+      players = data.players || [];
+
+      renderRanking();
+    });
+  }
+
+  // =========================================
+  // ZAPIS
+  // =========================================
+
+  async function savePlayers() {
+
+    await setDoc(doc(db, "ranking", "players"), {
+      players: players
+    });
+
+  }
+
+  // =========================================
+  // RENDER
+  // =========================================
+
+  function renderRanking() {
+
+    rankingEl.innerHTML = "";
+
+    players.sort((a, b) => b.points - a.points);
+
+    players.forEach((player, index) => {
+
+      const card = document.createElement("div");
+      card.className = "player-card";
+
+      card.innerHTML = `
+        <div class="player-left">
+          <div class="position">${index + 1}</div>
+          <div class="player-name">${player.name}</div>
+        </div>
+
+        <div class="player-points">
+          ${player.points} pkt
+        </div>
+      `;
+
+      card.onclick = () => openDetails(player.id);
+
+      rankingEl.appendChild(card);
+    });
+  }
+
+  // =========================================
+  // SZCZEGÓŁY
+  // =========================================
+
+  function openDetails(id) {
+
+    selectedPlayer = players.find(p => p.id === id);
+
+    document.getElementById("detailsName").innerText =
+      selectedPlayer.name;
+
+    document.getElementById("detailsContent").innerHTML = `
+      <strong>Punkty:</strong> ${selectedPlayer.points}<br><br>
+      <strong>Informacje:</strong><br>${selectedPlayer.info}
+    `;
+
+    document.getElementById("pointsInput").value =
+      selectedPlayer.points;
+
+    document.getElementById("adminControls").style.display =
+      isAdmin ? "flex" : "none";
+
+    document.getElementById("detailsModal").style.display = "flex";
+  }
+
+  function closeDetailsModal() {
+    document.getElementById("detailsModal").style.display = "none";
+  }
+
+  // =========================================
+  // LOGOWANIE
+  // =========================================
+
+  loginBtn.onclick = () => {
+
+    if (isAdmin) {
+
+      isAdmin = false;
+      loginBtn.innerText = "Zaloguj";
+      alert("Wylogowano");
+
+    } else {
+
+      document.getElementById("loginModal").style.display = "flex";
     }
+  };
 
-    function registerPoop(name){
+  function login() {
 
-      showMessage();
+    const password =
+      document.getElementById("passwordInput").value;
 
-      alert(
-        `Dodano +1 dla ${name} 🚽\n\n` +
-        `Zmień wynik w Google Sheets.`
-      );
+    if (password === ADMIN_PASSWORD) {
 
+      isAdmin = true;
+      loginBtn.innerText = "Wyloguj";
+
+      closeLoginModal();
+
+      alert("Zalogowano");
+
+    } else {
+      alert("Nieprawidłowe hasło");
     }
+  }
 
-    function showMessage(){
+  function closeLoginModal() {
+    document.getElementById("loginModal").style.display = "none";
+  }
 
-      const message =
-        document.getElementById("message");
+  // =========================================
+  // EDYCJA PUNKTÓW
+  // =========================================
 
-      const randomMessage =
-        messages[
-          Math.floor(
-            Math.random()*messages.length
-          )
-        ];
+  function changePoints(value) {
 
-      message.innerText =
-        randomMessage;
+    const input =
+      document.getElementById("pointsInput");
 
-      message.classList.add("show");
+    input.value = Number(input.value) + value;
+  }
 
-      setTimeout(()=>{
-        message.classList.remove("show");
-      },2000);
+  async function savePoints() {
 
-    }
+    selectedPlayer.points =
+      Number(document.getElementById("pointsInput").value);
 
-    loadPlayers();
+    await savePlayers();
 
-  </script>
+    openDetails(selectedPlayer.id);
+  }
+
+  // =========================================
+  // GLOBAL
+  // =========================================
+
+  window.login = login;
+  window.changePoints = changePoints;
+  window.savePoints = savePoints;
+  window.closeLoginModal = closeLoginModal;
+  window.closeDetailsModal = closeDetailsModal;
+
+  // =========================================
+  // START
+  // =========================================
+
+  startRealtime();
+
+</script>
 
 </body>
 </html>
